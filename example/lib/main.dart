@@ -14,6 +14,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   TextEditingController controller1 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
+  int? number = 0;
+  static const MethodChannel _channel = const MethodChannel('demo_plugin');
+
+  countNumber({int? number1, int? number2}) async {
+     int? numb =
+        await _channel.invokeMethod('getCountNumber', [number1, number2]);
+    if (numb != null) {
+      setState(() {
+        number = numb;
+      });
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> creationParams = <String, dynamic>{};
@@ -98,7 +111,7 @@ class _MyAppState extends State<MyApp> {
                     SampleButton(
                       text: "Get Count Number",
                       onPressed: () {
-                        SampleCallNativeFlutter.getCountNumber(
+                        countNumber(
                             number1: controller1.text.isNotEmpty
                                 ? int.parse(controller1.text)
                                 : 0,
@@ -110,16 +123,10 @@ class _MyAppState extends State<MyApp> {
                     const SizedBox(
                       height: 10,
                     ),
-                    FutureBuilder<String?>(
-                      future: SampleCallNativeFlutter.countNumber,
-                      builder: (_, snapshoot) {
-                        return Text(
-                          'Count number is: ${snapshoot.data}',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.amber),
-                        );
-                      },
-                    ),
+                    Text(
+                      'Count number is: $number',
+                      style: const TextStyle(fontSize: 16, color: Colors.amber),
+                    )
                   ],
                 ),
               ),

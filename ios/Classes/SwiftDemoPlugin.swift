@@ -7,6 +7,22 @@ public class SwiftDemoPlugin: NSObject, FlutterPlugin {
     
     let instance = SwiftDemoPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+
+   
+    channel.setMethodCallHandler({
+        (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+
+    switch call.method {
+    case "getCountNumber":
+   
+    if let args = call.arguments{
+        let numb = getCountNumber(args: args as! [Int])
+        result(numb)
+      }
+    default:
+        result(nil)
+      } 
+    })
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -14,20 +30,19 @@ public class SwiftDemoPlugin: NSObject, FlutterPlugin {
     case "getPlatformVersion":
         result("iOS " + UIDevice.current.systemVersion)
     case "getCountNumber":
-   
-    result(getCountNumber(args: call.arguments as! [Int]))
-       
+        result(0)
     default:
         result(nil)
     } 
   }
 
+
   public func getCountNumber(args: [Int]) -> Int {
-    if (args != []){
+    if (args.count != 0){
        let result = args[0] + args[1]
     return result
     }else {
-       return 0
+    return 0
     }
   }
 }
